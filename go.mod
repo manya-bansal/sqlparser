@@ -1,4 +1,4 @@
-module sqlparser
+module github.com/manya-bansal/sqlparser
 
 go 1.21.1
 
