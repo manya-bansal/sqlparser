@@ -46,6 +46,7 @@ import (
 // is partially parsed but still contains a syntax error, the
 // error is ignored and the DDL is returned anyway.
 func Parse(sql string) (Statement, error) {
+	fmt.Println("test!!!!!!!!!")
 	tokenizer := NewStringTokenizer(sql)
 	if yyParse(tokenizer) != 0 {
 		if tokenizer.partialDDL != nil {
