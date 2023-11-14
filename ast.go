@@ -46,7 +46,6 @@ import (
 // is partially parsed but still contains a syntax error, the
 // error is ignored and the DDL is returned anyway.
 func Parse(sql string) (Statement, error) {
-	fmt.Println("test!!!!!!!!! for workflow again now")
 	tokenizer := NewStringTokenizer(sql)
 	if yyParse(tokenizer) != 0 {
 		if tokenizer.partialDDL != nil {
@@ -1940,6 +1939,7 @@ func (*ConvertUsingExpr) iExpr() {}
 func (*MatchExpr) iExpr()        {}
 func (*GroupConcatExpr) iExpr()  {}
 func (*Default) iExpr()          {}
+func (*AilikeExpr) iExpr()       {}
 
 // ReplaceExpr finds the from expression from root
 // and replaces it with to. If from matches root,
@@ -3391,6 +3391,35 @@ func (node *TableIdent) UnmarshalJSON(b []byte) error {
 	node.v = result
 	return nil
 }
+
+// ----- AILIKE CODE -------
+
+// OrExpr represents an OR expression.
+type AilikeExpr struct {
+	Left, Right Expr
+}
+
+// Format formats the node.
+func (node *AilikeExpr) Format(buf *TrackedBuffer) {
+	buf.Myprintf("%v ailike %v", node.Left, node.Right)
+}
+
+func (node *AilikeExpr) walkSubtree(visit Visit) error {
+	if node == nil {
+		return nil
+	}
+	return Walk(
+		visit,
+		node.Left,
+		node.Right,
+	)
+}
+
+func (node *AilikeExpr) replace(from, to Expr) bool {
+	return replaceExprs(from, to, &node.Left, &node.Right)
+}
+
+// ----- AILIKE CODE -------
 
 // Backtick produces a backticked literal given an input string.
 func Backtick(in string) string {
