@@ -2126,7 +2126,7 @@ func BenchmarkParse3(b *testing.B) {
 }
 
 func TestParseAILIKE(t *testing.T) {
-	test_input := "select col1 ailike col2"
+	test_input := "select col1 ailike_cos col2"
 	stmt, err := Parse(test_input)
 	fmt.Println(err)
 	fmt.Println(stmt)

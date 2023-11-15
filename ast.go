@@ -1940,6 +1940,7 @@ func (*MatchExpr) iExpr()        {}
 func (*GroupConcatExpr) iExpr()  {}
 func (*Default) iExpr()          {}
 func (*AilikeExpr) iExpr()       {}
+func (*AilikeCosExpr) iExpr()    {}
 
 // ReplaceExpr finds the from expression from root
 // and replaces it with to. If from matches root,
@@ -3416,6 +3417,36 @@ func (node *AilikeExpr) walkSubtree(visit Visit) error {
 }
 
 func (node *AilikeExpr) replace(from, to Expr) bool {
+	return replaceExprs(from, to, &node.Left, &node.Right)
+}
+
+// ----- AILIKE CODE -------
+
+
+// ----- AILIKE COS CODE -------
+
+// AilikeCosExpr represents a similarity search using Cosine metric expression.
+type AilikeCosExpr struct {
+	Left, Right Expr
+}
+
+// Format formats the node.
+func (node *AilikeCosExpr) Format(buf *TrackedBuffer) {
+	buf.Myprintf("%v ailike %v", node.Left, node.Right)
+}
+
+func (node *AilikeCosExpr) walkSubtree(visit Visit) error {
+	if node == nil {
+		return nil
+	}
+	return Walk(
+		visit,
+		node.Left,
+		node.Right,
+	)
+}
+
+func (node *AilikeCosExpr) replace(from, to Expr) bool {
 	return replaceExprs(from, to, &node.Left, &node.Right)
 }
 

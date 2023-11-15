@@ -132,6 +132,7 @@ func forceEOF(yylex interface{}) {
 %left <bytes> OR
 %left <bytes> AND
 %left <bytes> AILIKE
+%left <bytes> AILIKE_COS
 %right <bytes> NOT '!'
 %left <bytes> BETWEEN CASE WHEN THEN ELSE END
 %left <bytes> '=' '<' '>' LE GE NE NULL_SAFE_EQUAL IS LIKE REGEXP IN
@@ -1914,6 +1915,10 @@ expression:
   {
     $$ = &OrExpr{Left: $1, Right: $3}
   }
+| expression AILIKE_COS expression
+  {
+    $$ = &AilikeCosExpr{Left: $1, Right: $3}
+  }
 | expression AILIKE expression
   {
     $$ = &AilikeExpr{Left: $1, Right: $3}
@@ -2128,6 +2133,10 @@ value_expression:
 | value_expression '+' value_expression
   {
     $$ = &BinaryExpr{Left: $1, Operator: PlusStr, Right: $3}
+  }
+| expression AILIKE_COS expression
+  {
+    $$ = &AilikeCosExpr{Left: $1, Right: $3}
   }
 | value_expression AILIKE value_expression
   {
